@@ -1,32 +1,51 @@
 @extends('mainLayout')
 
 @section('page-content')
+<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 <div class="container-fluid">
+    <div class="row">
+        <div class="col text-end">
+            <div class="fs-6">
+                @if(Auth::check())
+                {{ Auth::user()->userInfo->user_firstname.' '.Auth::user()->userInfo->user_lastname }}
+                <span class="fs-6" style="font-weight: bold;">
+                    @if(Auth::user()->hasRole('admin'))
+                    : Admin User
+                    @else
+                    : User
+                    @endif
+                </span>
+                @include('slugs.logout')
+                @endif
+            </div>
+        </div>
+    </div>
     <!-- Do what you can, with what you have, where you are. - Theodore Roosevelt -->
     <form action="{{ route('saveledger') }}" method="post">
         @csrf
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4 border border-dark-subtle py-3">
-            <div>
-                <label for="entrydetail" class="form-label">Entry Detail:</label>
-                <textarea name="entrydetail" id="entrydetail" cols="30" rows="5" class="form-control form-control-sm" style="resize:none;"></textarea>
+        <div class="row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4 border border-dark-subtle py-3">
+                <div>
+                    <label for="entrydetail" class="form-label">Entry Detail:</label>
+                    <textarea name="entrydetail" id="entrydetail" cols="30" rows="5"
+                        class="form-control form-control-sm" style="resize:none;"></textarea>
+                </div>
+                <div>
+                    <label for="entryamount" class="form-label">Amount:</label>
+                    <input type="text" class="form-control form-control-sm text-end" id="entryamount">
+                </div>
             </div>
-            <div>
-                <label for="entryamount" class="form-label">Amount:</label>
-                <input type="text" class="form-control form-control-sm text-end" id="entryamount">
+            <div class="col-sm-4"></div>
+        </div>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4 text-center border-start border-bottom border-end border-dark-subtle py-3">
+                <button type="submit" class="btn btn-md btn-primary">Submit</button>
+                <button type="reset" class="btn btn-md btn-danger">Clear</button>
             </div>
+            <div class="col-4"></div>
         </div>
-        <div class="col-sm-4"></div>
-    </div>
-    <div class="row">
-        <div class="col-4"></div>
-        <div class="col-4 text-center border-start border-bottom border-end border-dark-subtle py-3">
-            <button type="submit" class="btn btn-md btn-primary">Submit</button>
-            <button type="reset" class="btn btn-md btn-danger">Clear</button>
-        </div>
-        <div class="col-4"></div>
-    </div>
     </form>
     <div class="row">
         <div class="col">
