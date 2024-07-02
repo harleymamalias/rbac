@@ -14,14 +14,15 @@ class AdminController extends Controller
         return view('admin.dashboard');
     }
 
-    public function manageUsers(){
+    public function manageUsers()
+    {
         $users = User::with(['roles', 'permissions'])->select('id', 'name', 'email')->get();
         $roles = Role::all();
         $permissions = Permission::all();
-    
+
         return view('admin.manageUsers', compact('users', 'roles', 'permissions'));
     }
-    
+
 
     public function assignPermissions(Request $request, User $user)
     {
@@ -30,8 +31,8 @@ class AdminController extends Controller
     }
 
     public function assignRoles(Request $request, User $user)
-{
-    $user->roles()->sync($request->roles);
-    return redirect()->back()->with('success', 'Roles updated successfully');
-}
+    {
+        $user->roles()->sync($request->roles);
+        return redirect()->back()->with('success', 'Roles updated successfully');
+    }
 }

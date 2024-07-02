@@ -86,7 +86,7 @@
                     </button>
 
                     <button type="reset"
-                        class="w-full px-6 py-3 mt-2 text-sm text-black transform bg-white border border-white rounded-lg dark:border-white dark:text-black hover:bg-blue-500 hover:text-white focus:outline-none focus:ring focus:ring-white focus:ring-opacity-50">
+                        class="w-full px-6 py-3 mt-2 text-sm text-black transform bg-gray-300 border border-white rounded-lg dark:border-white dark:text-black hover:bg-blue-500 hover:text-white focus:outline-none focus:ring focus:ring-white focus:ring-opacity-50">
                         Clear
                     </button>
                 </form>
