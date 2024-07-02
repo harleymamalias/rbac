@@ -23,16 +23,17 @@ class AdminController extends Controller
         return view('admin.manageUsers', compact('users', 'roles', 'permissions'));
     }
 
-
-    public function assignPermissions(Request $request, User $user)
+    public function assignRoles(Request $request)
     {
-        $user->permissions()->sync($request->permissions);
-        return redirect()->back()->with('success', 'Permissions updated successfully');
-    }
+        $users = User::with('roles')->get();
+        foreach ($request->roles as $userId => $roleIds) {
+            $user = User::find($userId);
+            $user->roles()->sync($roleIds);
 
-    public function assignRoles(Request $request, User $user)
-    {
-        $user->roles()->sync($request->roles);
-        return redirect()->back()->with('success', 'Roles updated successfully');
+            $permissions = Role::whereIn('id', $roleIds)->with('permissions')->get()->pluck('permissions')->flatten()->unique();
+            $user->permissions()->sync($permissions->pluck('id'));
+        }
+
+        return redirect()->back()->with('success', 'Roles and Permissions updated successfully');
     }
 }

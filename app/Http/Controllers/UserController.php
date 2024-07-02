@@ -14,4 +14,5 @@ class UserController extends Controller
     public function loadAssemblePage(){
         return view('production.main');
     }
+    
 }
