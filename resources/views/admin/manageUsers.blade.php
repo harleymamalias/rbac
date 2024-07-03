@@ -93,7 +93,7 @@
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
 
-                    <span class="mx-4 font-medium">Tickets</span>
+                    <span class="mx-4 font-medium">Security</span>
                 </a>
 
                 <a class="flex items-center px-4 py-2 mt-5 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
@@ -134,7 +134,7 @@
                 {{ session('success') }}
             </div>
             @endif
-            <form action="{{ route('assign.roles') }}" method="POST">
+            <form action="{{ route('admin.assignRoles') }}" method="POST">
                 @csrf
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 light:bg-gray-800">
@@ -145,7 +145,7 @@
                             <th rowspan="2" class="border p-2">Roles</th>
                             <th rowspan="2" class="border p-2">Permissions</th>
                             <th colspan="{{ count($roles) }}" class="border p-2">Roles</th>
-                            <th rowspan="2" class="border p-2">Update Roles</th>
+                            <th rowspan="2" colspan="3" class="border p-2">Actions</th>
                         </tr>
                         <tr>
                             @foreach($roles as $role)
@@ -179,9 +179,21 @@
 
                             <td class="border p-2">
                                 <div class="flex items-center justify-center">
+                                    <button type="button" data-modal-toggle="addRoleModal"
+                                        class="flex items-center bg-[#0d6efd] text-white px-3 py-2 rounded hover:bg-[#0b5ed7]">
+                                        <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        Add
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="border p-2">
+                                <div class="flex items-center justify-center">
                                     <button type="submit"
-                                        class="flex items-center bg-teal-600 text-white px-2 py-2 rounded hover:bg-teal-500">
-                                        <!-- Edit Pen Icon -->
+                                        class="flex items-center bg-[#ffc107] text-black px-3 py-2 rounded hover:bg-[#e0a800]">
                                         <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path d="M3 17.25V21H6.75L17.175 10.575L13.425 6.825L3 17.25Z"
@@ -190,27 +202,143 @@
                                             <path d="M15.675 5.325L18.675 8.325" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
-                                        Update Roles
+                                        Update
                                     </button>
                                 </div>
                             </td>
+                            <td class="border p-2">
+                                <div class="flex items-center justify-center">
+                                    <button type="button" data-modal-toggle="deleteRoleModal"
+                                        class="flex items-center bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700">
+                                        <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3 6H5H19H21" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                            <path
+                                                d="M4 6V21C4 21.5304 4.21071 22.0391 4.58579 22.4142C4.96086 22.7893 5.46957 23 6 23H18C18.5304 23 19.0391 22.7893 19.4142 22.4142C19.7893 22.0391 20 21.5304 20 21V6M10 11V17"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                            <path d="M14 11V17" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M5 6L7 6M17 6L19 6" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </form>
-
+            <!-- Add Role Modal -->
+            <div id="addRoleModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 overflow-y-auto hidden">
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="relative w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg">
+                        <button type="button" data-modal-toggle="addRoleModal"
+                            class="absolute top-2 right-2 p-1 text-gray-500 hover:text-gray-900">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <h3 class="text-lg font-medium text-gray-900">Add New Role</h3>
+                        <form method="POST" action="{{ route('admin.storeRole') }}">
+                            @csrf
+                            <div class="mt-4">
+                                <label for="roleName" class="block text-sm font-medium text-gray-700">Role Name</label>
+                                <input type="text" id="roleName" name="roleName" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#0d6efd] focus:border-[#0b5ed7] sm:text-sm" />
+                            </div>
+                            <div class="mt-4">
+                                <label for="permissions" class="block text-sm font-medium text-gray-700">Assign
+                                    Permissions</label>
+                                <select id="permissions" name="permissions[]" multiple
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#0d6efd] focus:border-[#0b5ed7] sm:text-sm">
+                                    @foreach($permissions as $permission)
+                                    <option value="{{ $permission->id }}">{{ $permission->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mt-6 flex justify-end">
+                                <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-[#0d6efd] text-white rounded-md shadow-sm hover:bg-[#0b5ed7] focus:outline-none focus:ring-2 focus:ring-[#0d6efd] focus:ring-offset-2">
+                                    Add Role
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="deleteRoleModal" tabindex="-1" aria-hidden="true"
+                class="fixed inset-0 z-50 overflow-y-auto hidden">
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="relative w-full max-w-md p-6 mx-auto bg-white rounded-lg shadow-lg">
+                        <button type="button" data-modal-toggle="deleteRoleModal"
+                            class="absolute top-2 right-2 p-1 text-gray-500 hover:text-gray-900">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <h3 class="text-lg font-medium text-gray-900">Delete Role</h3>
+                        <p class="mt-2 text-sm text-gray-600">Select a role to delete. This action cannot be undone.</p>
+                        <form method="POST" action="{{ route('admin.deleteRole') }}">
+                            @csrf
+                            @method('DELETE')
+                            <div class="mt-4">
+                                <label for="roleSelect" class="block text-sm font-medium text-gray-700">Select Role to
+                                    Delete</label>
+                                <select id="roleSelect" name="roleId"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option value="">Select a role</option>
+                                    @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('roleId')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="mt-6 flex justify-end">
+                                <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2">
+                                    Delete
+                                </button>
+                                <button type="button" data-modal-toggle="deleteRoleModal"
+                                    class="ml-3 inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <script>
-                function openModal(userId) {
-                    document.getElementById(`modal-${userId}`).classList.remove('hidden');
-                }
-
-                function closeModal(userId) {
-                    document.getElementById(`modal-${userId}`).classList.add('hidden');
-                }
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('[data-modal-toggle]').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const target = button.getAttribute('data-modal-toggle');
+                            if (target === 'deleteRoleModal') {
+                                
+                                fetch('/admin/roles')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        const roleSelect = document.getElementById('roleSelect');
+                                        roleSelect.innerHTML = '<option value="">Select a role</option>';
+                                        data.forEach(role => {
+                                            roleSelect.innerHTML += `<option value="${role.id}">${role.name}</option>`;
+                                        });
+                                    });
+                            }
+                            document.getElementById(target).classList.toggle('hidden');
+                        });
+                    });
+                });
             </script>
-
         </div>
     </div>
 </div>

@@ -24,9 +24,12 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/admin', [AdminController::class, 'index'])->name('dash')->middleware('role:admin');
     Route::get('/admin/users',[AdminController::class,'manageUsers'])->name('usertool')->middleware('role:admin');
-
-    Route::post('/assign-roles', [AdminController::class, 'assignRoles'])->name('assign.roles');
-
+    
+    //Crud Operations for Role Management
+    Route::get('/manage-users', [AdminController::class, 'manageUsers'])->name('admin.manageUsers');
+    Route::post('/assign-roles', [AdminController::class, 'assignRoles'])->name('admin.assignRoles');
+    Route::post('/store-role', [AdminController::class, 'storeRole'])->name('admin.storeRole');
+    Route::delete('/admin/roles/delete', [AdminController::class, 'deleteRole'])->name('admin.deleteRole');
 
     Route::get('/acctg/new',[BookController::class,'newLedgerEntry'])->middleware(['role:admin,bookeeper,auditor'])->name('newledger');
     Route::post('/acctg/new',[BookController::class,'saveNewLedgerEntry'])->middleware('role:admin,bookeeper')->name('saveledger');

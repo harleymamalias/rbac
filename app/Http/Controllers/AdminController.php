@@ -36,4 +36,30 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Roles and Permissions updated successfully');
     }
+    public function storeRole(Request $request)
+    {
+        $request->validate([
+            'roleName' => 'required|string|max:255|unique:roles,name',
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:permissions,id',
+        ]);
+
+        $role = Role::create(['name' => $request->roleName]);
+        $role->permissions()->attach($request->permissions);
+
+        return redirect()->back()->with('success', 'New role added successfully');
+    }
+    public function deleteRole(Request $request)
+    {
+        $request->validate([
+            'roleId' => 'required|exists:roles,id',
+        ]);
+
+        $role = Role::find($request->roleId);
+        $role->permissions()->detach();
+        $role->delete();
+
+        return redirect()->back()->with('success', 'Role deleted successfully');
+    }
+
 }
